@@ -24,6 +24,10 @@ public class InsertAdministratorForm {
 	@NotBlank(message = "パスワードは必須です")
 	@Length(min = 3, max = 100, message = "パスワードは3文字以上100文字以下である必要があります")
 	private String password;
+	/** 確認用パスワード */
+	@NotBlank(message = "パスワードは必須です")
+	@Length(min = 3, max = 100, message = "パスワードは3文字以上100文字以下である必要があります")
+	private String confirmPassword;
 
 	public String getName() {
 		return name;
@@ -49,10 +53,19 @@ public class InsertAdministratorForm {
 		this.password = password;
 	}
 
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
 	@Override
 	public String toString() {
 		return "InsertAdministratorForm [name=" + name + ", mailAddress=" + mailAddress + ", password=" + password
-				+ "]";
+				+ ", confirmPassword=" + confirmPassword +"]";
 	}
+
 
 }

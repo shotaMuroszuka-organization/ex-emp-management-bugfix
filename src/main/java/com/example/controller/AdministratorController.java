@@ -75,7 +75,11 @@ public class AdministratorController {
 	 */
 	@PostMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form, BindingResult result) {
-		if(result.hasErrors()){
+		if (!form.getPassword().equals(form.getConfirmPassword())) {
+			result.rejectValue("confirmPassword", "passwordMismatch", "パスワードが一致しません");
+		}
+
+		if(result.hasErrors() || (administratorService.login(form.getMailAddress(), form.getPassword())) != null){
 			return toInsert();
 		}
 		Administrator administrator = new Administrator();
