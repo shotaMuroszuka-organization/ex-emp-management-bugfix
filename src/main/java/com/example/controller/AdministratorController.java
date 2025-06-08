@@ -79,7 +79,11 @@ public class AdministratorController {
 			result.rejectValue("confirmPassword", "passwordMismatch", "パスワードが一致しません");
 		}
 
-		if(result.hasErrors() || (administratorService.login(form.getMailAddress(), form.getPassword())) != null){
+		if(administratorService.checkExistsEmail(form.getMailAddress()) != null){
+			result.rejectValue("mailAddress", "duplicate", "メールアドレスが既に存在しています");
+		}
+
+		if (result.hasErrors()){
 			return toInsert();
 		}
 		Administrator administrator = new Administrator();
