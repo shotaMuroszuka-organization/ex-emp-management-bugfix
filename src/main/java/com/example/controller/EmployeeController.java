@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import com.example.form.InsertEmployeeForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +39,11 @@ public class EmployeeController {
 	@ModelAttribute
 	public UpdateEmployeeForm setUpForm() {
 		return new UpdateEmployeeForm();
+	}
+
+	@ModelAttribute
+	public InsertEmployeeForm setInsertForm(){
+		return new InsertEmployeeForm();
 	}
 
 	/////////////////////////////////////////////////////
@@ -97,7 +103,6 @@ public class EmployeeController {
 	@PostMapping("/search")
 	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
 		List<Employee> employeeList = employeeService.searchEmployee(name);
-		System.out.println(employeeList);
 		if (employeeList.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
 			employeeList = employeeService.showList();
@@ -106,5 +111,35 @@ public class EmployeeController {
 		}
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
+	}
+
+	@GetMapping("/toInsert")
+	public String toInsert() {
+		return "employee/insert";
+	}
+
+	@PostMapping("/insert")
+	public String insert(@Validated InsertEmployeeForm form, BindingResult result){
+		if(result.hasErrors()){
+			return toInsert();
+		}
+
+		Employee employee = new Employee();
+		employee.setName(form.getName());
+		employee.setImage(form.getImage());
+		employee.setGender(form.getGender());
+		employee.setHireDate(form.getHireDate());
+		employee.setMailAddress(form.getMailAddress());
+		employee.setZipCode(form.getZipCode());
+		employee.setAddress(form.getAddress());
+		employee.setTelephone(form.getTelephone());
+		employee.setSalary(form.getSalary());
+		employee.setCharacteristics(form.getCharacteristics());
+		employee.setDependentsCount(form.getDependentsCount());
+
+		System.out.println(employee);
+
+		employeeService.insert(employee);
+		return "redirect:/employee/toInsert";
 	}
 }
