@@ -79,6 +79,10 @@ public class AdministratorController {
 			result.rejectValue("confirmPassword", "passwordMismatch", "パスワードが一致しません");
 		}
 
+		if(administratorService.checkExistsEmail(form.getMailAddress()) != null){
+			result.rejectValue("mailAddress", "duplicate", "メールアドレスが既に存在しています");
+		}
+
 		if(result.hasErrors()){
 			return toInsert();
 		}
@@ -116,6 +120,7 @@ public class AdministratorController {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return "redirect:/";
 		}
+		session.setAttribute("administratorName", administrator.getName());
 		return "redirect:/employee/showList";
 	}
 
