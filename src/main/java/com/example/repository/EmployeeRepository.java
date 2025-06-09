@@ -52,9 +52,7 @@ public class EmployeeRepository {
 	public List<Employee> findAll() {
 		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees";
 
-		List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
-
-		return developmentList;
+		return template.query(sql, EMPLOYEE_ROW_MAPPER);
 	}
 
 	/**
@@ -69,9 +67,7 @@ public class EmployeeRepository {
 
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 
-		Employee development = template.queryForObject(sql, param, EMPLOYEE_ROW_MAPPER);
-
-		return development;
+		return template.queryForObject(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
 
 	/**
@@ -82,5 +78,13 @@ public class EmployeeRepository {
 
 		String updateSql = "UPDATE employees SET dependents_count=:dependentsCount WHERE id=:id";
 		template.update(updateSql, param);
+	}
+
+	public List<Employee> findByName(String name){
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees WHERE name LIKE :name";
+
+		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+
+		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
 }

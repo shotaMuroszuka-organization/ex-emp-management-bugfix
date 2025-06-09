@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.domain.Employee;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 従業員情報を操作するコントローラー.
@@ -91,5 +92,19 @@ public class EmployeeController {
 		employee.setDependentsCount(form.getIntDependentsCount());
 		employeeService.update(employee);
 		return "redirect:/employee/showList";
+	}
+
+	@PostMapping("/search")
+	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
+		List<Employee> employeeList = employeeService.searchEmployee(name);
+		System.out.println(employeeList);
+		if (employeeList.isEmpty()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
+			employeeList = employeeService.showList();
+			model.addAttribute("employeeList", employeeList);
+			return "redirect:/employee/showList";
+		}
+		model.addAttribute("employeeList", employeeList);
+		return "employee/list";
 	}
 }

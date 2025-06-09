@@ -76,6 +76,17 @@
                 >ログアウト</a
               >
             </p>
+            <form th:action="@{/employee/search}" method="post">
+              <input type="text"
+                     name="name"
+                     id="name"
+                     class="form-control"
+                     th:value="*{name}"
+              />
+              <button type="submit" class="btn btn-primary">
+                従業員検索
+              </button>
+            </form>
           </div>
           <!-- /.navbar-collapse -->
         </div>
@@ -107,6 +118,13 @@
               </tr>
             </thead>
             <tbody>
+            <div class="form-group">
+              <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}">
+                  エラーメッセージ
+                </p>
+              </div>
+            </div>
               <tr th:each="employee : ${employeeList}">
                 <td>
                   <a
