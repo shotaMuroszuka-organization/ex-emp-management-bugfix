@@ -3,7 +3,6 @@
 $(function(){
     function searchEmployeeList(){
         const nameValue = $("#name").val();
-        console.log(nameValue);
         $.ajax({
         url: "http://localhost:8080/employee/autoComp",
         type: "GET",
@@ -13,7 +12,25 @@ $(function(){
         },
         async:true,
         }).done(function(data){
-            console.log(data[0].name);
+            $("#autocomplete-list").remove();
+
+            // 候補リストを作成
+            const list = $("<ul>").attr("id", "autocomplete-list").addClass("autocomplete-items list-group");
+
+            data.forEach(function(item){
+                const li = $("<li>")
+                    .addClass("list-group-item list-group-item-action")
+                    .text(item)
+                    .on("click", function() {
+                        $("#name").val(item);
+                        $("#autocomplete-list").remove(); // 候補非表示
+                    });
+                list.append(li);
+            });
+
+            // name入力欄の直後に挿入
+            $("#name").after(list);
+
         }).fail(function(XMLHttpRequest, textStatus, errorThrown){
 //            alert('エラーが発生しました！');
             console.log("XMLHttpRequest：" + XMLHttpRequest.status);
@@ -22,7 +39,17 @@ $(function(){
         });
     }
 
-    $("#name").on("change", function(){
-        searchEmployeeList();
+    $("#name").on("input", function(){
+        if ($(this).val().length > 0) {
+            searchEmployeeList();
+        } else {
+            $("#autocomplete-list").remove();
+        }
+    });
+
+     $(document).on("click", function(e){
+        if (!$(e.target).closest("#name, #autocomplete-list").length) {
+            $("#autocomplete-list").remove();
+        }
     });
 });

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,6 @@ public class EmployeeController {
 	@PostMapping("/search")
 	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
 		List<Employee> employeeList = employeeService.searchEmployee(name);
-		System.out.println(employeeList);
 		if (employeeList.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
 			employeeList = employeeService.showList();
@@ -107,11 +107,11 @@ public class EmployeeController {
 
 	@GetMapping("/autoComp")
 	@ResponseBody
-	public List<Employee> autoCompEmployees(String name){
+	public List<String> autoCompEmployees(String name){
 		List<Employee> employeeList = employeeService.searchEmployee(name);
-		String[] employeeName = new String[employeeList.size()];
-		for (String employeeName : employeeList){
-
+		List<String> employeeNameList = new ArrayList<>();
+		for (Employee employee : employeeList){
+			employeeNameList.add(employee.getName());
 		}
 		return employeeNameList;
 	}
