@@ -71,15 +71,13 @@
                 >
               </li>
             </ul>
-            <p class="navbar-text navbar-right">
-              <span th:text="${session.administratorName}">山田太郎</span
-              >さんこんにちは！ &nbsp;&nbsp;&nbsp;
-              <a
-                href="../administrator/login.html"
-                class="navbar-link"
-                th:href="@{/logout}"
-                >ログアウト</a
-              >
+            <p class="navbar-text navbar-right" style="display: flex; align-items: center;">
+              <span th:text="${session.administratorName}">山田太郎</span>さんこんにちは！&nbsp;&nbsp;&nbsp;
+            <form th:action="@{/logout}" method="post" style="margin:0 0 0 10px;">
+              <button type="submit" class="btn btn-link navbar-link" style="padding:0; border:none; background:none; cursor:pointer;">
+                ログアウト
+              </button>
+            </form>
             </p>
               <form th:action="@{/employee/search}" method="post">
                 <input type="text"
