@@ -87,4 +87,39 @@ public class EmployeeRepository {
 
 		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
+
+
+	public List<Employee> findPage(int offset, int limit) {
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count "
+				+ "FROM employees ORDER BY hire_date LIMIT :limit OFFSET :offset";
+
+		SqlParameterSource param = new MapSqlParameterSource()
+				.addValue("limit", limit)
+				.addValue("offset", offset);
+
+		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+	}
+
+
+	public void insert(Employee employee){
+		String sql = "INSERT INTO employees " +
+					"(id, name, image, gender, hire_date, mail_address, zip_code, " +
+					"address, telephone, salary, characteristics, dependents_count) " +
+					"VALUES ((SELECT max(id) + 1 FROM employees), :name, :image, :gender, :hireDate, :mailAddress, :zipCode, :address, :telephone, :salary, :characteristics, :dependentsCount);";
+		SqlParameterSource param = new MapSqlParameterSource()
+										.addValue("name", employee.getName())
+										.addValue("image", employee.getImage())
+										.addValue("gender", employee.getGender())
+										.addValue("hireDate", employee.getHireDate())
+										.addValue("mailAddress", employee.getMailAddress())
+										.addValue("zipCode", employee.getZipCode())
+										.addValue("address", employee.getAddress())
+										.addValue("telephone", employee.getTelephone())
+										.addValue("salary", employee.getSalary())
+										.addValue("characteristics", employee.getCharacteristics())
+										.addValue("dependentsCount", employee.getDependentsCount());
+
+		template.update(sql, param);
+	}
+
 }

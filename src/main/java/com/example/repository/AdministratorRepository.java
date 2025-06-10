@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Administrator;
@@ -20,6 +21,9 @@ import com.example.domain.Administrator;
  */
 @Repository
 public class AdministratorRepository {
+
+//	@Autowired
+//	PasswordEncoder passwordEncoder;
 
 	/**
 	 * Administratorオブジェクトを生成するローマッパー.
@@ -74,6 +78,7 @@ public class AdministratorRepository {
 	 */
 	public void insert(Administrator administrator) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(administrator);
+//		administrator.setPassword(passwordEncoder.encode(administrator.getPassword()));
 		String sql = "insert into administrators(name,mail_address,password)values(:name,:mailAddress,:password);";
 		template.update(sql, param);
 	}

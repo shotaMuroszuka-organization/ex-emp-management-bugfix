@@ -65,28 +65,31 @@
                   >従業員管理</a
                 >
               </li>
+              <li class="active">
+                <a href="insert.html" th:href="@{/employee/toInsert}"
+                >従業員追加</a
+                >
+              </li>
             </ul>
-            <p class="navbar-text navbar-right">
-              <span th:text="${session.administratorName}">山田太郎</span
-              >さんこんにちは！ &nbsp;&nbsp;&nbsp;
-              <a
-                href="../administrator/login.html"
-                class="navbar-link"
-                th:href="@{/logout}"
-                >ログアウト</a
-              >
-            </p>
-            <form th:action="@{/employee/search}" method="post">
-              <input type="text"
-                     name="name"
-                     id="name"
-                     class="form-control"
-                     th:value="*{name}"
-              />
-              <button type="submit" class="btn btn-primary">
-                従業員検索
+            <p class="navbar-text navbar-right" style="display: flex; align-items: center;">
+              <span th:text="${session.administratorName}">山田太郎</span>さんこんにちは！&nbsp;&nbsp;&nbsp;
+            <form th:action="@{/logout}" method="post" style="margin:0 0 0 10px;">
+              <button type="submit" class="btn btn-link navbar-link" style="padding:0; border:none; background:none; cursor:pointer;">
+                ログアウト
               </button>
             </form>
+            </p>
+              <form th:action="@{/employee/search}" method="post">
+                <input type="text"
+                       name="name"
+                       id="name"
+                       class="form-control"
+                       th:value="${name}"
+                />
+                <button type="submit" class="btn btn-primary">
+                  従業員検索
+                </button>
+              </form>
           </div>
           <!-- /.navbar-collapse -->
         </div>
@@ -143,6 +146,15 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="pagination">
+            <ul class="pagination">
+              <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                  th:classappend="${i} == ${currentPage} ? 'active'">
+                <a th:href="@{'/employee/showList'(page=${i}, name=${name})}" th:text="${i}">1</a>
+              </li>
+            </ul>
+          </div>
 
           <!-- ここから下を編集する必要はありません -->
         </div>

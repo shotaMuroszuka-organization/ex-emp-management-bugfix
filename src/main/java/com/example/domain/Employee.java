@@ -1,5 +1,6 @@
 package com.example.domain;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -90,7 +91,7 @@ public class Employee {
 		this.name = name;
 	}
 
-	public String getImage() {
+	public String  getImage() {
 		return image;
 	}
 

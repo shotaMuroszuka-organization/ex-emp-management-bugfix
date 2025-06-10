@@ -1,8 +1,14 @@
 package com.example.controller;
 
 import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import com.example.form.InsertEmployeeForm;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +44,11 @@ public class EmployeeController {
 		return new UpdateEmployeeForm();
 	}
 
+	@ModelAttribute
+	public InsertEmployeeForm setInsertForm(){
+		return new InsertEmployeeForm();
+	}
+
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員一覧を表示する
 	/////////////////////////////////////////////////////
@@ -48,9 +59,14 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(Model model) {
+	public String showList(@RequestParam(defaultValue = "1") int page, Model model) {
+		int pageSize = 10;
+		List<Employee> pagePerEmployeeList = employeeService.findPage(page, pageSize);
 		List<Employee> employeeList = employeeService.showList();
-		model.addAttribute("employeeList", employeeList);
+		int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+		model.addAttribute("employeeList", pagePerEmployeeList);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "employee/list";
 	}
 
@@ -93,16 +109,57 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/search")
-	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
-		List<Employee> employeeList = employeeService.searchEmployee(name);
+	public String searchEmployees(@RequestParam String name, @RequestParam(defaultValue = "1") int page, Model model, RedirectAttributes redirectAttributes) {
+		int pageSize = 10;
+		List<Employee> pagePerEmployeeList = employeeService.findPage(page, pageSize);
+		List<Employee> employeeList = employeeService.searchEmployee(name.replace(",", ""));
 		if (employeeList.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
 			employeeList = employeeService.showList();
-			model.addAttribute("employeeList", employeeList);
+			int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+			model.addAttribute("employeeList", pagePerEmployeeList);
+			model.addAttribute("name", name);
+			model.addAttribute("currentPage", page);
+			model.addAttribute("totalPages", totalPages);
 			return "redirect:/employee/showList";
+		}else if (employeeList.size() == employeeService.showList().size()){
+			model.addAttribute("employeeList", pagePerEmployeeList);
+		}else{
+			model.addAttribute("employeeList", employeeList);
 		}
-		model.addAttribute("employeeList", employeeList);
+		int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+		model.addAttribute("name", name);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "employee/list";
+	}
+
+	@GetMapping("/toInsert")
+	public String toInsert() {
+		return "employee/insert";
+	}
+
+	@PostMapping("/insert")
+	public String insert(@Validated InsertEmployeeForm form, BindingResult result) throws IOException {
+//		System.out.println(System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img");
+
+		if(result.hasErrors()){
+			return toInsert();
+		}
+
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		String fileName = form.getImage().getOriginalFilename();
+		employee.setImage(fileName);
+		System.out.println(employee);
+		if (!form.getImage().isEmpty()){
+			String uploadDir = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
+			Path destPath = Paths.get(uploadDir, fileName);
+			form.getImage().transferTo(destPath.toFile());
+		}
+
+		employeeService.insert(employee);
+		return "redirect:/employee/toInsert";
 	}
 
 	@GetMapping("/autoComp")
