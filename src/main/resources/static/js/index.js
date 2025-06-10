@@ -3,16 +3,17 @@
 $(function(){
     function searchEmployeeList(){
         const nameValue = $("#name").val();
+        console.log(nameValue);
         $.ajax({
-        url: "http://localhost:8080/employee/search",
-        type: "POST",
-        dataType: "html",
+        url: "http://localhost:8080/employee/autoComp",
+        type: "GET",
+        dataType: "json",
         data:{
             name: nameValue
         },
         async:true,
         }).done(function(data){
-            console.log(data);
+            console.log(data[0].name);
         }).fail(function(XMLHttpRequest, textStatus, errorThrown){
 //            alert('エラーが発生しました！');
             console.log("XMLHttpRequest：" + XMLHttpRequest.status);

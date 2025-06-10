@@ -7,10 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.domain.Employee;
 import com.example.form.UpdateEmployeeForm;
@@ -106,5 +103,16 @@ public class EmployeeController {
 		}
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
+	}
+
+	@GetMapping("/autoComp")
+	@ResponseBody
+	public List<Employee> autoCompEmployees(String name){
+		List<Employee> employeeList = employeeService.searchEmployee(name);
+		String[] employeeName = new String[employeeList.size()];
+		for (String employeeName : employeeList){
+
+		}
+		return employeeNameList;
 	}
 }
