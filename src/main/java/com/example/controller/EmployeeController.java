@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.domain.Employee;
 import com.example.form.UpdateEmployeeForm;
@@ -61,9 +58,14 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(Model model) {
+	public String showList(@RequestParam(defaultValue = "1") int page, Model model) {
+		int pageSize = 10;
+		List<Employee> pagePerEmployeeList = employeeService.findPage(page, pageSize);
 		List<Employee> employeeList = employeeService.showList();
-		model.addAttribute("employeeList", employeeList);
+		int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+		model.addAttribute("employeeList", pagePerEmployeeList);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "employee/list";
 	}
 
@@ -106,15 +108,28 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/search")
-	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
-		List<Employee> employeeList = employeeService.searchEmployee(name);
+	public String searchEmployees(@RequestParam String name, @RequestParam(defaultValue = "1") int page, Model model, RedirectAttributes redirectAttributes) {
+		int pageSize = 10;
+		List<Employee> pagePerEmployeeList = employeeService.findPage(page, pageSize);
+		List<Employee> employeeList = employeeService.searchEmployee(name.replace(",", ""));
 		if (employeeList.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
 			employeeList = employeeService.showList();
-			model.addAttribute("employeeList", employeeList);
+			int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+			model.addAttribute("employeeList", pagePerEmployeeList);
+			model.addAttribute("name", name);
+			model.addAttribute("currentPage", page);
+			model.addAttribute("totalPages", totalPages);
 			return "redirect:/employee/showList";
+		}else if (employeeList.size() == employeeService.showList().size()){
+			model.addAttribute("employeeList", pagePerEmployeeList);
+		}else{
+			model.addAttribute("employeeList", employeeList);
 		}
-		model.addAttribute("employeeList", employeeList);
+		int totalPages = (int) Math.ceil((double) employeeList.size() / pageSize);
+		model.addAttribute("name", name);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "employee/list";
 	}
 

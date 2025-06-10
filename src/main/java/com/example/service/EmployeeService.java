@@ -60,6 +60,11 @@ public class EmployeeService {
 		return employeeRepository.findByName(name);
 	}
 
+
+	public List<Employee> findPage(int offset, int limit) {
+		return employeeRepository.findPage((offset - 1) * limit, limit);
+  }
+  
 	public void insert(Employee employee){
 		employeeRepository.insert(employee);
 	}

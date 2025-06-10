@@ -88,6 +88,19 @@ public class EmployeeRepository {
 		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
 
+
+	public List<Employee> findPage(int offset, int limit) {
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count "
+				+ "FROM employees ORDER BY hire_date LIMIT :limit OFFSET :offset";
+
+		SqlParameterSource param = new MapSqlParameterSource()
+				.addValue("limit", limit)
+				.addValue("offset", offset);
+
+		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+	}
+
+
 	public void insert(Employee employee){
 		String sql = "INSERT INTO employees " +
 					"(id, name, image, gender, hire_date, mail_address, zip_code, " +
@@ -108,4 +121,5 @@ public class EmployeeRepository {
 
 		template.update(sql, param);
 	}
+
 }
