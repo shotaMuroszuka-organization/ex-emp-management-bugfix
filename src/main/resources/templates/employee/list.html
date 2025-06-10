@@ -76,17 +76,17 @@
                 >ログアウト</a
               >
             </p>
-            <form th:action="@{/employee/search}" method="post">
-              <input type="text"
-                     name="name"
-                     id="name"
-                     class="form-control"
-                     th:value="*{name}"
-              />
-              <button type="submit" class="btn btn-primary">
-                従業員検索
-              </button>
-            </form>
+              <form th:action="@{/employee/search}" method="post">
+                <input type="text"
+                       name="name"
+                       id="name"
+                       class="form-control"
+                       th:value="${name}"
+                />
+                <button type="submit" class="btn btn-primary">
+                  従業員検索
+                </button>
+              </form>
           </div>
           <!-- /.navbar-collapse -->
         </div>
@@ -143,6 +143,15 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="pagination">
+            <ul class="pagination">
+              <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                  th:classappend="${i} == ${currentPage} ? 'active'">
+                <a th:href="@{'/employee/showList'(page=${i}, name=${name})}" th:text="${i}">1</a>
+              </li>
+            </ul>
+          </div>
 
           <!-- ここから下を編集する必要はありません -->
         </div>
