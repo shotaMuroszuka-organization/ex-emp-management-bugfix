@@ -106,7 +106,7 @@
     </ol>
 
     <h3>従業員登録</h3>
-    <form th:action="@{/employee/insert}" method="post" th:object="${insertEmployeeForm}">
+    <form th:action="@{/employee/insert}" method="post" th:object="${insertEmployeeForm}" enctype="multipart/form-data">
 
                 従業員名
                 <div class="error-messages" th:errors="*{name}">
@@ -126,7 +126,7 @@
                 <div class="error-messages" th:errors="*{image}">
                     エラー
                 </div>
-                <input type="file" name = "image" th:field="*{image}"/><br>
+                <input type="file" name = "image" th:field="*{image}" class="form-control"/><br>
                 <label
                         class="control-label"
                         style="color: red"

@@ -2,7 +2,9 @@ package com.example.form;
 
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Date;
 
 public class InsertEmployeeForm {
@@ -15,8 +17,8 @@ public class InsertEmployeeForm {
     private String name;
 
     /** 画像 */
-    @NotBlank(message = "画像は必須です")
-    private String image;
+    @NotNull(message = "画像は必須です")
+    private MultipartFile image;
 
     /** 性別 */
     @NotBlank(message = "性別は必須です")
@@ -76,11 +78,11 @@ public class InsertEmployeeForm {
         this.name = name;
     }
 
-    public String getImage() {
+    public MultipartFile getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(MultipartFile image) {
         this.image = image;
     }
 
