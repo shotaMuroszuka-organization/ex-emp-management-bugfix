@@ -38,7 +38,6 @@ public class WebSecurityConfig {
                     .permitAll()
             )
             .authorizeHttpRequests(auth -> auth
-                    // ログイン画面・登録画面・CSSなどは認証不要にする
                     .requestMatchers("/", "/toInsert", "/insert", "/css/**", "/js/**", "/img/**").permitAll()
                     .anyRequest().authenticated()
             )
