@@ -60,7 +60,7 @@ public class EmployeeService {
 		return employeeRepository.findByName(name);
 	}
 
-	public List<Employee> findPage(int page, int size) {
-		return employeeRepository.findPage(page, size);
+	public List<Employee> findPage(int offset, int limit) {
+		return employeeRepository.findPage(offset, limit);
 	}
 }
