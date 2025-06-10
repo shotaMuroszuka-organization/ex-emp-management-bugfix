@@ -59,4 +59,8 @@ public class EmployeeService {
 		}
 		return employeeRepository.findByName(name);
 	}
+
+	public void insert(Employee employee){
+		employeeRepository.insert(employee);
+	}
 }

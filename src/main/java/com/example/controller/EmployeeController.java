@@ -1,7 +1,13 @@
 package com.example.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import com.example.form.InsertEmployeeForm;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +44,11 @@ public class EmployeeController {
 	@ModelAttribute
 	public UpdateEmployeeForm setUpForm() {
 		return new UpdateEmployeeForm();
+	}
+
+	@ModelAttribute
+	public InsertEmployeeForm setInsertForm(){
+		return new InsertEmployeeForm();
 	}
 
 	/////////////////////////////////////////////////////
@@ -97,7 +108,6 @@ public class EmployeeController {
 	@PostMapping("/search")
 	public String searchEmployees(String name, Model model, RedirectAttributes redirectAttributes) {
 		List<Employee> employeeList = employeeService.searchEmployee(name);
-		System.out.println(employeeList);
 		if (employeeList.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "1件もありませんでした");
 			employeeList = employeeService.showList();
@@ -106,5 +116,33 @@ public class EmployeeController {
 		}
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
+	}
+
+	@GetMapping("/toInsert")
+	public String toInsert() {
+		return "employee/insert";
+	}
+
+	@PostMapping("/insert")
+	public String insert(@Validated InsertEmployeeForm form, BindingResult result) throws IOException {
+//		System.out.println(System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img");
+
+		if(result.hasErrors()){
+			return toInsert();
+		}
+
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		String fileName = form.getImage().getOriginalFilename();
+		employee.setImage(fileName);
+		System.out.println(employee);
+		if (!form.getImage().isEmpty()){
+			String uploadDir = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
+			Path destPath = Paths.get(uploadDir, fileName);
+			form.getImage().transferTo(destPath.toFile());
+		}
+
+		employeeService.insert(employee);
+		return "redirect:/employee/toInsert";
 	}
 }
