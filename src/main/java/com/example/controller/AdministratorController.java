@@ -107,35 +107,4 @@ public class AdministratorController {
 		return "administrator/login";
 	}
 
-	/**
-	 * ログインします.
-	 * 
-	 * @param form 管理者情報用フォーム
-	 * @return ログイン後の従業員一覧画面
-	 */
-	@PostMapping("/login")
-	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
-		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
-		if (administrator == null) {
-			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return "redirect:/";
-		}
-		session.setAttribute("administratorName", administrator.getName());
-		return "redirect:/employee/showList";
-	}
-
-	/////////////////////////////////////////////////////
-	// ユースケース：ログアウトをする
-	/////////////////////////////////////////////////////
-	/**
-	 * ログアウトをします. (SpringSecurityに任せるためコメントアウトしました)
-	 * 
-	 * @return ログイン画面
-	 */
-	@GetMapping(value = "/logout")
-	public String logout() {
-		session.invalidate();
-		return "redirect:/";
-	}
-
 }
