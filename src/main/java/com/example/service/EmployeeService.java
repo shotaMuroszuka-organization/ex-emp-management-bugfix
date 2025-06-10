@@ -61,6 +61,6 @@ public class EmployeeService {
 	}
 
 	public List<Employee> findPage(int offset, int limit) {
-		return employeeRepository.findPage(offset, limit);
+		return employeeRepository.findPage((offset - 1) * limit, limit);
 	}
 }

@@ -94,7 +94,7 @@ public class EmployeeRepository {
 
 		SqlParameterSource param = new MapSqlParameterSource()
 				.addValue("limit", limit)
-				.addValue("offset", (offset - 1) * limit);
+				.addValue("offset", offset);
 
 		return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
