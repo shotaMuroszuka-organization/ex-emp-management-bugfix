@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.util.ArrayList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -159,5 +160,16 @@ public class EmployeeController {
 
 		employeeService.insert(employee);
 		return "redirect:/employee/toInsert";
+	}
+
+	@GetMapping("/autoComp")
+	@ResponseBody
+	public List<String> autoCompEmployees(String name){
+		List<Employee> employeeList = employeeService.searchEmployee(name);
+		List<String> employeeNameList = new ArrayList<>();
+		for (Employee employee : employeeList){
+			employeeNameList.add(employee.getName());
+		}
+		return employeeNameList;
 	}
 }
